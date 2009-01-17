@@ -1,18 +1,21 @@
 class Comment < ActiveRecord::Base
-  belongs_to :commentable, :polymorphic => true
-  
   # NOTE: install the acts_as_votable plugin if you 
   # want user to vote on the quality of comments.
   #acts_as_voteable
   
-  # NOTE: Comments belong to a user
-  belongs_to :user
+  belongs_to :commentable, :polymorphic => true
+  belongs_to :commentor, :polymorphic => true
+  
+  #validations---------
+  validates_presence_of :commentable_id, :commentable_type
+  validates_presence_of :commentor_type, :unless => Proc.new {|c| c.commentor_id.nil?}
+  #--------------------
   
   # Helper class method to lookup all comments assigned
   # to all commentable types for a given user.
-  def self.find_comments_by_user(user)
+  def self.find_comments_by_commentor(commentor)
     find(:all,
-      :conditions => ["user_id = ?", user.id],
+      :conditions => ["commentor_id = ? AND commentor_type = ?", commentor.id, commentor.class.name],
       :order => "created_at DESC"
     )
   end
