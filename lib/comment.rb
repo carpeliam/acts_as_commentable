@@ -4,18 +4,18 @@ class Comment < ActiveRecord::Base
   #acts_as_voteable
   
   belongs_to :commentable, :polymorphic => true
-  belongs_to :commentor, :polymorphic => true
+  belongs_to :commenter, :polymorphic => true
   
   #validations---------
   validates_presence_of :commentable_id, :commentable_type
-  validates_presence_of :commentor_type, :unless => Proc.new {|c| c.commentor_id.nil?}
+  validates_presence_of :commenter_type, :unless => Proc.new {|c| c.commenter_id.nil?}
   #--------------------
   
   # Helper class method to lookup all comments assigned
   # to all commentable types for a given user.
-  def self.find_comments_by_commentor(commentor)
+  def self.find_comments_by_commenter(commenter)
     find(:all,
-      :conditions => ["commentor_id = ? AND commentor_type = ?", commentor.id, commentor.class.name],
+      :conditions => ["commenter_id = ? AND commenter_type = ?", commenter.id, commenter.class.name],
       :order => "created_at DESC"
     )
   end

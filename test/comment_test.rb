@@ -6,10 +6,10 @@ class CommentTest < Test::Unit::TestCase
     c = Comment.new
     assert_equal false, c.valid?
     
-    # Validation #2: commentor_type should be provided if commentor_id is provided
+    # Validation #2: commenter_type should be provided if commenter_id is provided
     c = Comment.new
     c.commentable = users(:user1)
-    c.commentor_id = users(:user1).id
+    c.commenter_id = users(:user1).id
     assert_equal false, c.valid?
   end
   
